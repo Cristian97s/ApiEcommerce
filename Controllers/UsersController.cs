@@ -30,5 +30,50 @@ namespace ApiEcommerce.Controllers
             var userDtos = _mapper.Map<List<UserDto>>(users);
             return Ok(userDtos);
         }
+
+        // GET(id) Obtener un usuario por id
+        [HttpGet("{id:int}", Name = "GetUser")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetUser(int id)
+        {
+            var user = _userRepository.GetUser(id);
+            if (user == null)
+            {
+                return NotFound($"El usero con el id {id} no existe");
+            }
+            var userDto = _mapper.Map<UserDto>(user);
+            return Ok(userDto);
+        }
+
+        // POST Agregar un Usuario
+        [HttpPost(Name = "RegisterUser")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RegisterUser([FromBody] CreateUserDto createUserDto)
+        {
+            if (createUserDto == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (string.IsNullOrWhiteSpace(createUserDto.Username))
+            {
+                return BadRequest("El usuario es requerido");
+            }
+            if (!_userRepository.IsUniqueUser(createUserDto.Username))
+            {
+                return BadRequest("El usario ya existe");
+            }
+            var result = await _userRepository.Register(createUserDto);
+            if (result == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al registrar el usuario");
+            }
+            return CreatedAtRoute("GetUser", new { id = result.Id }, result);
+        }
     }
 }
