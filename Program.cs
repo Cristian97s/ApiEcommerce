@@ -18,6 +18,15 @@ builder.Services.AddOpenApi();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// configuracion de Cors
+builder.Services.AddCors(options => 
+    {
+        options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader(); // en WithOrigins("http://localhost:8000") ejemplo si solo quiero un origen
+        });
+    });
 
 var app = builder.Build();
 
@@ -30,6 +39,8 @@ if (app.Environment.IsDevelopment())
 } 
 
 app.UseHttpsRedirection();
+// agregando la configuracion
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthorization();
 
