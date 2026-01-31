@@ -1,3 +1,4 @@
+using ApiEcommerce.Constants;
 using ApiEcommerce.Repository;
 using ApiEcommerce.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ builder.Services.AddSwaggerGen();
 // configuracion de Cors
 builder.Services.AddCors(options => 
     {
-        options.AddPolicy("AllowSpecificOrigin",
+        options.AddPolicy(PolicyNames.AllowSpecificOrigin,
         builder =>
         {
             builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader(); // en WithOrigins("http://localhost:8000") ejemplo si solo quiero un origen
@@ -40,7 +41,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 // agregando la configuracion
-app.UseCors("AllowSpecificOrigin");
+app.UseCors(PolicyNames.AllowSpecificOrigin);
 
 app.UseAuthorization();
 
