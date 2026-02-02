@@ -12,7 +12,7 @@ namespace ApiEcommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     // [EnableCors(PolicyNames.AllowSpecificOrigin)] --> Agregando Cors a nivel de Controlador
     public class CategoriesController : ControllerBase
     {
@@ -26,6 +26,7 @@ namespace ApiEcommerce.Controllers
         }
 
         // GET Obtener todas las categorias
+        [AllowAnonymous] // haciendo publico el endpoint
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,6 +43,7 @@ namespace ApiEcommerce.Controllers
         }
 
         // GET(id) Obtener una categoria por id
+        [AllowAnonymous] // haciendo publico el endpoint
         [HttpGet("{id:int}", Name = "GetCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -71,6 +71,9 @@ app.UseHttpsRedirection();
 // agregando la configuracion
 app.UseCors(PolicyNames.AllowSpecificOrigin);
 
+// clasificacion de endpoint 
+app.UseAuthorization();
+
 app.UseAuthorization();
 
 app.MapControllers();
