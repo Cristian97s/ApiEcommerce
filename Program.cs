@@ -5,6 +5,7 @@ using ApiEcommerce.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = false,
-        ValidateAudience = true
+        ValidateAudience = false
     };
 });
 
@@ -46,7 +47,31 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = 
+            "Nuestra API utiliza autenticación JWT con el esquema Bearer.\n\n" +
+            "Ingresa **Bearer** seguido de un espacio y el token JWT.\n\n" +
+            "Ejemplo: **Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...**",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",          // ← minúscula, es el estándar
+        BearerFormat = "JWT"        // ← recomendado
+    });
+
+    // ¡Esta es la parte que cambia en v10!
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecuritySchemeReference("Bearer", document),
+            new List<string>()   // scopes → vacío para JWT Bearer típico
+            // o Array.Empty<string>() si prefieres
+        }
+    });
+});
 // configuracion de Cors
 builder.Services.AddCors(options =>
     {
