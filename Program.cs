@@ -2,6 +2,7 @@ using System.Text;
 using ApiEcommerce.Constants;
 using ApiEcommerce.Repository;
 using ApiEcommerce.Repository.IRepository;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -67,7 +68,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = 
+        Description =
             "Nuestra API utiliza autenticación JWT con el esquema Bearer.\n\n" +
             "Ingresa **Bearer** seguido de un espacio y el token JWT.\n\n" +
             "Ejemplo: **Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...**",
@@ -88,6 +89,22 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+// versionamiendo de la api
+var apiVersioningBuilder = builder.Services.AddApiVersioning(option =>
+{
+    option.AssumeDefaultVersionWhenUnspecified = true;
+    option.DefaultApiVersion = new ApiVersion(1, 0);
+    option.ReportApiVersions = true;
+    option.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version")); //?api-version
+});
+// api explorer que perimite que swagger pueda mostrar  las versiones correctamente
+apiVersioningBuilder.AddApiExplorer(option =>
+{
+    option.GroupNameFormat = "'v'VVV"; // v1,v2,v3...
+    option.SubstituteApiVersionInUrl = true; //api/v{api_version}/products (faltaria configurar el controlador)
+});
+
 // configuracion de Cors
 builder.Services.AddCors(options =>
     {
