@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiEcommerce.Controllers
 {
     [Authorize(Roles ="Admin")] // para pedir autorizacion
-    [Route("api/{version:apiVersion}/[controller]")] 
+    [Route("api/v{version:apiVersion}/[controller]")] 
     [ApiController]
     public class ProductsController : ControllerBase
     {

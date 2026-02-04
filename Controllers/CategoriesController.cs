@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
-    [Route("api/{version:apiVersion}/[controller]")] // al agregar el apiVersion en la url saldra la vesion
+    [Route("api/v{version:apiVersion}/[controller]")] // al agregar el apiVersion en la url saldra la vesion
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [ApiController]
