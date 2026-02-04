@@ -2,6 +2,7 @@ using ApiEcommerce.Constants;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
 using ApiEcommerce.Repository.IRepository;
+using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -10,7 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/{version:apiVersion}/[controller]")] // al agregar el apiVersion en la url saldra la vesion
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [ApiController]
     [Authorize(Roles ="Admin")]
     // [EnableCors(PolicyNames.AllowSpecificOrigin)] --> Agregando Cors a nivel de Controlador
@@ -30,10 +33,29 @@ namespace ApiEcommerce.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [MapToApiVersion("1.0")]
         // [EnableCors("AllowSpecificOrigin")] --> Agregando Cors a nivel de metodos
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();
+            var categoriesDto = new List<CategoryDto>();
+            foreach (var category in categories)
+            {
+                categoriesDto.Add(_mapper.Map<CategoryDto>(category));
+            }
+            return Ok(categoriesDto);
+        }
+
+        // GET Obtener todas las categorias
+        [AllowAnonymous] // haciendo publico el endpoint
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [MapToApiVersion("2.0")]
+        // [EnableCors("AllowSpecificOrigin")] --> Agregando Cors a nivel de metodos
+        public IActionResult GetCategoriesOrderById()
+        {
+            var categories = _categoryRepository.GetCategories().OrderBy(cat => cat.Id);
             var categoriesDto = new List<CategoryDto>();
             foreach (var category in categories)
             {
