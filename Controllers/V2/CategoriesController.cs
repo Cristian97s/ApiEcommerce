@@ -9,10 +9,9 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiEcommerce.Controllers
+namespace ApiEcommerce.Controllers.V2
 {
     [Route("api/v{version:apiVersion}/[controller]")] // al agregar el apiVersion en la url saldra la vesion
-    [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [ApiController]
     [Authorize(Roles ="Admin")]
@@ -33,25 +32,7 @@ namespace ApiEcommerce.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [MapToApiVersion("1.0")]
-        // [EnableCors("AllowSpecificOrigin")] --> Agregando Cors a nivel de metodos
-        public IActionResult GetCategories()
-        {
-            var categories = _categoryRepository.GetCategories();
-            var categoriesDto = new List<CategoryDto>();
-            foreach (var category in categories)
-            {
-                categoriesDto.Add(_mapper.Map<CategoryDto>(category));
-            }
-            return Ok(categoriesDto);
-        }
-
-        // GET Obtener todas las categorias
-        [AllowAnonymous] // haciendo publico el endpoint
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [MapToApiVersion("2.0")]
+        //[MapToApiVersion("2.0")]
         // [EnableCors("AllowSpecificOrigin")] --> Agregando Cors a nivel de metodos
         public IActionResult GetCategoriesOrderById()
         {
