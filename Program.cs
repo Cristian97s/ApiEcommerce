@@ -167,9 +167,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.SwaggerEndpoint("/swagger/v2/swagger.json", "v2"); 
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "v2");
     });
 }
+
+//esto nos perminte archivos estaticos
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 // agregando la configuracion
