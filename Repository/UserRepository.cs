@@ -31,14 +31,14 @@ public class UserRepository : IUserRepository
         _maper = mapper;
     }
 
-    public User? GetUser(int id)
+    public ApplicationUser? GetUser(string id)
     {
-        return _db.Users.FirstOrDefault(u => u.Id == id);
+        return _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
     }
 
-    public ICollection<User> GetUsers()
+    public ICollection<ApplicationUser> GetUsers()
     {
-        return _db.Users.OrderBy(u => u.Username).ToList();
+        return _db.ApplicationUsers.OrderBy(u => u.UserName).ToList();
     }
 
     public bool IsUniqueUser(string username)
@@ -145,6 +145,7 @@ public class UserRepository : IUserRepository
             var createdUser = _db.ApplicationUsers.FirstOrDefault(u => u.UserName == createUserDto.Username);
             return _maper.Map<UserDataDto>(createdUser);
         }
-        throw new ApplicationException("No se puedo realizar el registro");
+        var errors = string.Join(",", result.Errors.Select(e => e.Description));
+        throw new ApplicationException($"No se puedo realizar el registro: {errors}");
     }
 }

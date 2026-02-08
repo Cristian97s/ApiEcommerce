@@ -9,11 +9,11 @@ public interface IUserRepository
 {
     //    - GetUsers
     //        → Devuelve todos los usuarios en ICollection del tipo User.
-    ICollection<User> GetUsers();
+    ICollection<ApplicationUser> GetUsers();
 
     //    - GetUser
     //        → Recibe un id y devuelve un solo objeto User o null si no se encuentra.
-    User? GetUser(int id);
+    ApplicationUser? GetUser(string id);
     //    - IsUniqueUser
     //        → Recibe un nombre de usuario y devuelve un bool indicando si el nombre de usuario es único.
     bool IsUniqueUser(string username);
