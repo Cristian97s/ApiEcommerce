@@ -23,6 +23,6 @@ public interface IUserRepository
     Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto);
     //    - Register
     //        → Recibe un objeto CreateUserDto y devuelve un objeto User de forma asíncrona (Task).
-    Task<User> Register(CreateUserDto createUserDto);
+    Task<UserDataDto> Register(CreateUserDto createUserDto);
 
 }
