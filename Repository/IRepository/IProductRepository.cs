@@ -11,6 +11,11 @@ public interface IProductRepository
     //        → Devuelve todos los productos en ICollection del tipo Product.
     ICollection<Product> GetProducts();
 
+    // Metodo para paginacion
+    ICollection<Product> GetProductsInPages(int pageNumber, int pageSize);
+
+    int GetTotalProducts();
+
     //    - GetProductsForCategory
     //        → Recibe un categoryId y devuelve los productos de esa categoría en ICollection del tipo Product.
     ICollection<Product> GetProductsForCategory(int categoryId);
