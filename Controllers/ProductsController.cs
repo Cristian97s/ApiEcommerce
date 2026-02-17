@@ -3,7 +3,6 @@ using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Models.Dtos.Responses;
 using ApiEcommerce.Repository.IRepository;
 using Asp.Versioning;
-using AutoMapper;
 using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,13 +18,11 @@ namespace ApiEcommerce.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
-            _mapper = mapper;
         }
 
         // GET Obtener todos los productos
@@ -37,7 +34,7 @@ namespace ApiEcommerce.Controllers
         {
             var products = _productRepository.GetProducts();
             //usando Mapper
-            var productDto = _mapper.Map<List<ProductDto>>(products);
+            var productDto = products.Adapt<List<ProductDto>>();
             return Ok(productDto);
         }
 
@@ -62,7 +59,7 @@ namespace ApiEcommerce.Controllers
             }
             var products = _productRepository.GetProductsInPages(pageNumber, pageSize);
             //usando Mapper
-            var productDto = _mapper.Map<List<ProductDto>>(products);
+            var productDto = products.Adapt<List<ProductDto>>();
             var paginationResponse = new PaginationResponse<ProductDto>
             {
                 PageNumber = pageNumber,
@@ -88,7 +85,7 @@ namespace ApiEcommerce.Controllers
             {
                 return NotFound($"El producto con el productId {productId} no existe");
             }
-            var productDto = _mapper.Map<ProductDto>(product);
+            var productDto = product.Adapt<ProductDto>();
             return Ok(productDto);
         }
 
@@ -115,7 +112,7 @@ namespace ApiEcommerce.Controllers
                 ModelState.AddModelError("CustomError", $"La Categoria con el {createProductDto.CategoryId} no existe");
                 return BadRequest(ModelState);
             }
-            var product = _mapper.Map<Product>(createProductDto);
+            var product = createProductDto.Adapt<Product>();
             // agregando imagen
             if (createProductDto.Image != null)
             {
@@ -131,7 +128,7 @@ namespace ApiEcommerce.Controllers
                 return StatusCode(500, ModelState);
             }
             var createProduct = _productRepository.GetProduct(product.ProductId);
-            var productDto = _mapper.Map<ProductDto>(createProduct);
+            var productDto = createProduct.Adapt<ProductDto>();
 
             return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, productDto);
         }
@@ -149,7 +146,7 @@ namespace ApiEcommerce.Controllers
             {
                 return NotFound($"Los productos con la categoryId {categoryId} no existe");
             }
-            var productsDto = _mapper.Map<List<ProductDto>>(product);
+            var productsDto = product.Adapt<List<ProductDto>>();
             return Ok(productsDto);
         }
 
@@ -166,7 +163,7 @@ namespace ApiEcommerce.Controllers
             {
                 return NotFound($"Los productos con el nombre o descripcion '{searchTerm}' no existe");
             }
-            var productsDto = _mapper.Map<List<ProductDto>>(products);
+            var productsDto = products.Adapt<List<ProductDto>>();
             return Ok(productsDto);
         }
 
@@ -220,7 +217,7 @@ namespace ApiEcommerce.Controllers
                 ModelState.AddModelError("CustomError", $"La Categoria con el {updateProductDto.CategoryId} no existe");
                 return BadRequest(ModelState);
             }
-            var product = _mapper.Map<Product>(updateProductDto);
+            var product = updateProductDto.Adapt<Product>();
             product.ProductId = productId;
             // agregando imagen
             if (updateProductDto.Image != null)

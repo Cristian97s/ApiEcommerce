@@ -1,3 +1,7 @@
+using Mapster;
+using ApiEcommerce.Mapping;
+// Registrar configuraciones de Mapster
+MapsterConfig.RegisterMappings();
 using System.Text;
 using ApiEcommerce.Constants;
 using ApiEcommerce.Data;
@@ -35,7 +39,6 @@ builder.Services.AddResponseCaching(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 //integracion de autentication con .net identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
